@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { z } from 'zod'
-import { FIELDS, readField, writeField } from '@/lib/profile/fields'
+import { FIELD_IDS, FIELDS, readField, writeField } from '@/lib/profile/fields'
+import { SHARED_FIELDS } from '@/lib/profile/shared-fields'
+import { HOME_AND_LIVING_FIELDS } from '@/tracks/home-and-living/fields'
+import { TRACKS, trackById } from '@/tracks'
 import { createEmptyProfile } from '@/types/profile'
 
 describe('the field registry', () => {
@@ -43,5 +46,89 @@ describe('the field registry', () => {
     const profile = createEmptyProfile()
     expect(writeField(profile, 'housing.current', 'a_castle')).toBe(false)
     expect(profile.housing.current).toBeNull()
+  })
+})
+
+describe('the track registry', () => {
+  it('has the home and living track', () => {
+    expect(trackById('home-and-living')?.plainName).toBe('Home and living')
+  })
+
+  it('gives every question a globally unique id', () => {
+    const seen = new Map<string, string>()
+    for (const track of TRACKS) {
+      for (const question of track.questions) {
+        const owner = seen.get(question.id)
+        expect(
+          owner,
+          `"${question.id}" is claimed by ${owner} and ${track.id}`,
+        ).toBeUndefined()
+        seen.set(question.id, track.id)
+      }
+    }
+  })
+
+  it('only lets a track write to its own fields or shared ones', () => {
+    const shared: readonly string[] = Object.keys(SHARED_FIELDS)
+    const ownership = new Map<string, string>(
+      Object.keys(HOME_AND_LIVING_FIELDS).map((id) => [id, 'home-and-living']),
+    )
+
+    for (const track of TRACKS) {
+      for (const question of track.questions) {
+        const written = [
+          question.profileField,
+          ...question.options.flatMap((option) =>
+            (option.implies ?? []).map((implied) => implied.field),
+          ),
+        ]
+        for (const field of written) {
+          if (shared.includes(field)) continue
+          expect(
+            ownership.get(field),
+            `${track.id} writes to ${field}, which it does not own`,
+          ).toBe(track.id)
+        }
+      }
+    }
+  })
+
+  it('references only fields that exist', () => {
+    for (const track of TRACKS) {
+      for (const question of track.questions) {
+        expect(FIELD_IDS, `question ${question.id}`).toContain(question.profileField)
+        for (const condition of question.showWhen ?? []) {
+          expect(FIELD_IDS, `condition on ${question.id}`).toContain(condition.field)
+        }
+      }
+      for (const rule of track.rules ?? []) {
+        const clauses = [
+          ...rule.supports.flatMap((signal) => signal.when),
+          ...rule.against.flatMap((signal) => signal.when),
+        ]
+        for (const clause of clauses) {
+          expect(FIELD_IDS, `rule ${rule.pathwayId}`).toContain(clause.field)
+        }
+        for (const required of rule.requires) {
+          expect(FIELD_IDS, `rule ${rule.pathwayId} requires`).toContain(required)
+        }
+      }
+      for (const step of track.steps) {
+        const conditions = [...(step.showWhen ?? []), ...(step.showWhenAny ?? [])]
+        for (const condition of conditions) {
+          expect(FIELD_IDS, `step ${step.id}`).toContain(condition.field)
+        }
+      }
+    }
+  })
+
+  it('asks about every registered field, so none is dead weight', () => {
+    const asked = new Set(
+      TRACKS.flatMap((track) => track.questions.map((question) => question.profileField)),
+    )
+    // context.state is registered ahead of the question that fills it, which
+    // arrives with the jurisdiction content in Phase 2.
+    const unasked = FIELD_IDS.filter((id) => !asked.has(id))
+    expect(unasked.sort()).toEqual(['context.state'])
   })
 })

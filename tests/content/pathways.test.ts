@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { PATHWAYS } from '@content/pathways'
 import { pathwaySchema, type Pathway } from '@/lib/content/schema'
-import { PATHWAY_RULES, pathwayRulesSchema } from '@/lib/decision-engine'
+import { pathwayRulesSchema } from '@/lib/decision-engine'
+import { PATHWAY_RULES } from '@/tracks/home-and-living/rules'
 
 /** Every string a person could read about a pathway. */
 function allProse(pathway: Pathway): string[] {

@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { QUESTIONS } from '@/lib/navigator/questions'
-import {
-  FIELD_VALUE_SCHEMAS,
-  questionSchema,
-} from '@/lib/navigator/question-schema'
+import { QUESTIONS } from '@/tracks/home-and-living/questions'
+import { questionSchema } from '@/lib/navigator/question-schema'
+import { FIELDS } from '@/lib/profile/fields'
 
 /**
  * Content validation. Questions are data, so they get checked like data rather
@@ -23,7 +21,7 @@ describe('question definitions', () => {
 
   it('every option value is valid for the profile field it writes to', () => {
     for (const question of QUESTIONS) {
-      const schema = FIELD_VALUE_SCHEMAS[question.profileField]
+      const schema = FIELDS[question.profileField].schema
       for (const option of question.options) {
         expect(
           schema.safeParse(option.value).success,
@@ -38,7 +36,7 @@ describe('question definitions', () => {
       for (const option of question.options) {
         for (const implied of option.implies ?? []) {
           expect(
-            FIELD_VALUE_SCHEMAS[implied.field].safeParse(implied.value).success,
+            FIELDS[implied.field].schema.safeParse(implied.value).success,
             `${question.id}: ${option.value} implies ${implied.field}`,
           ).toBe(true)
         }

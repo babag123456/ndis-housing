@@ -1,13 +1,10 @@
 import { UNSURE, type ParticipantProfile } from '@/types/profile'
 import type { MatchState } from '@/types/domain'
-import {
-  readProfileField,
-  type ProfileField,
-} from '@/lib/navigator/question-schema'
-import { QUESTIONS } from '@/lib/navigator/questions'
+import type { Question } from '@/lib/navigator/question-schema'
+import { readField, type FieldId } from '@/lib/profile/fields'
 import type { CopyVariants } from '@/lib/copy/perspective'
 import { allConditionsHold } from '@/lib/conditions'
-import { PATHWAY_RULES } from './rules'
+import type { PathwayRules } from './rule-schema'
 
 /**
  * The decision engine.
@@ -38,14 +35,9 @@ export type PathwayAssessment = {
   openQuestions: readonly OpenQuestion[]
 }
 
-/** Which question fills each profile field, so an unknown can name its question. */
-const QUESTION_FOR_FIELD: ReadonlyMap<ProfileField, (typeof QUESTIONS)[number]> = new Map(
-  QUESTIONS.map((question) => [question.profileField, question]),
-)
-
 /** A field is unknown when it was never answered, or answered "I'm not sure". */
-function isUnknown(profile: ParticipantProfile, field: ProfileField): boolean {
-  const value = readProfileField(profile, field)
+function isUnknown(profile: ParticipantProfile, field: FieldId): boolean {
+  const value = readField(profile, field)
   return value === null || value === UNSURE
 }
 
@@ -77,10 +69,23 @@ function resolveState(
   return 'worth_exploring'
 }
 
+/**
+ * Takes its rules and questions rather than importing one hard-coded set.
+ *
+ * That is what lets a track supply its own, and what lets a test supply a
+ * synthetic pair without the engine knowing tracks exist.
+ */
 export function evaluatePathways(
   profile: ParticipantProfile,
+  rules_: readonly PathwayRules[],
+  questions: readonly Question[],
 ): readonly PathwayAssessment[] {
-  return PATHWAY_RULES.map((rules) => {
+  /** Which question fills each field, so an unknown can name its question. */
+  const questionForField = new Map<string, Question>(
+    questions.map((question) => [question.profileField, question]),
+  )
+
+  return rules_.map((rules) => {
     const reasons = rules.supports
       .filter((signal) => allConditionsHold(profile, signal.when))
       .map((signal) => signal.reason)
@@ -93,7 +98,7 @@ export function evaluatePathways(
     const openQuestions = rules.requires
       .filter((field) => isUnknown(profile, field))
       .flatMap((field) => {
-        const question = QUESTION_FOR_FIELD.get(field)
+        const question = questionForField.get(field)
         return question === undefined
           ? []
           : [{ questionId: question.id, question: question.question }]

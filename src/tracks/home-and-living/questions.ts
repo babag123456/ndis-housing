@@ -1,4 +1,4 @@
-import type { Question } from './question-schema'
+import type { Question } from '@/lib/navigator/question-schema'
 
 /**
  * The opening journey.

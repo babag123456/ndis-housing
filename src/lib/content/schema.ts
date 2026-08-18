@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { profileConditionSchema } from '@/lib/conditions'
+import { profileConditionSchema, type ProfileCondition } from '@/lib/conditions'
 import { FUNDING_SOURCES, PROVIDER_KINDS } from '@/types/domain'
 
 /**
@@ -148,7 +148,14 @@ export const organisationSchema = z.object({
   showWhenAny: z.array(profileConditionSchema).min(1).optional(),
   sources: z.array(sourceSchema).min(1),
 })
-export type Organisation = z.infer<typeof organisationSchema>
+/** Declared rather than inferred, so conditions name a `FieldId`. See RoadmapStep. */
+export type Organisation = Omit<
+  z.infer<typeof organisationSchema>,
+  'showWhen' | 'showWhenAny'
+> & {
+  showWhen?: readonly ProfileCondition[]
+  showWhenAny?: readonly ProfileCondition[]
+}
 
 /**
  * A named organisation.

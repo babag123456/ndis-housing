@@ -3,6 +3,8 @@ import type { Pathway } from '@/lib/content/schema'
 import type { MatchState } from '@/types/domain'
 import type { ParticipantProfile } from '@/types/profile'
 import { resolveCopy, type Voice } from '@/lib/copy/perspective'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
+import type { Track } from '@/tracks/track'
 import { evaluatePathways, type PathwayAssessment } from './evaluate-pathways'
 
 /**
@@ -61,8 +63,9 @@ function explain(assessment: PathwayAssessment, voice: Voice | null): ExplainedP
 export function explainPathways(
   profile: ParticipantProfile,
   voice: Voice | null,
+  track: Track = HOME_AND_LIVING,
 ): readonly MatchStateGroup[] {
-  const explained = evaluatePathways(profile)
+  const explained = evaluatePathways(profile, track.rules ?? [], track.questions)
     .map((assessment) => explain(assessment, voice))
     .filter((result): result is ExplainedPathway => result !== null)
 

@@ -2,7 +2,7 @@
 
 import { FUNDING_SOURCES_CONTENT } from '@content/funding'
 import { FundingSourceCard } from './FundingSourceCard'
-import { useHousingPlan } from '@/lib/plan'
+import { usePlan } from '@/lib/plan'
 
 /**
  * The funding screen.
@@ -12,7 +12,7 @@ import { useHousingPlan } from '@/lib/plan'
  * shown first — the same content, ordered by what matters to them.
  */
 export function Funding() {
-  const { plan, ready, isComplete } = useHousingPlan()
+  const { plan, ready, isComplete } = usePlan()
 
   const relevanceById = new Map(
     ready && isComplete ? plan.funding.map((item) => [item.source.id, item.forOptions]) : [],

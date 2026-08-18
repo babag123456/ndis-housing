@@ -1,13 +1,10 @@
 import { createEmptyProfile, type ParticipantProfile } from '@/types/profile'
 import { resolveCopy, voiceFor, type Voice } from '@/lib/copy/perspective'
-import { QUESTIONS } from './questions'
-import {
-  readProfileField,
-  writeProfileField,
-  type AnswerMap,
-  type Condition,
-  type Question,
-} from './question-schema'
+import type { FieldRegistry } from '@/lib/profile/field'
+import { readField, writeField } from '@/lib/profile/fields'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
+import type { Track } from '@/tracks/track'
+import type { AnswerMap, Condition, Question } from './question-schema'
 
 /**
  * The conditional question flow.
@@ -56,8 +53,9 @@ export type FlowState = {
 function evaluateCondition(
   condition: Condition,
   profile: ParticipantProfile,
+  registry?: FieldRegistry,
 ): QuestionVisibility {
-  const value = readProfileField(profile, condition.field)
+  const value = readField(profile, condition.field, registry)
 
   if (condition.isUnanswered === true) {
     return value === null ? 'visible' : 'skipped'
@@ -71,12 +69,13 @@ function evaluateCondition(
 function evaluateVisibility(
   question: Question,
   profile: ParticipantProfile,
+  registry?: FieldRegistry,
 ): QuestionVisibility {
   if (!question.showWhen || question.showWhen.length === 0) return 'visible'
 
   let result: QuestionVisibility = 'visible'
   for (const condition of question.showWhen) {
-    const outcome = evaluateCondition(condition, profile)
+    const outcome = evaluateCondition(condition, profile, registry)
     if (outcome === 'skipped') return 'skipped'
     if (outcome === 'undetermined') result = 'undetermined'
   }
@@ -90,7 +89,11 @@ function evaluateVisibility(
  * only the answers that come before it, so answering a later question can never
  * make an earlier one disappear from the journey.
  */
-export function evaluateFlow(answers: AnswerMap): FlowState {
+export function evaluateFlow(
+  answers: AnswerMap,
+  track: Track = HOME_AND_LIVING,
+  registry?: FieldRegistry,
+): FlowState {
   const profile = createEmptyProfile()
   const visible: Question[] = []
   const thread: ThreadEntry[] = []
@@ -100,8 +103,8 @@ export function evaluateFlow(answers: AnswerMap): FlowState {
   let undeterminedCount = 0
   let voice: Voice | null = null
 
-  for (const question of QUESTIONS) {
-    const visibility = evaluateVisibility(question, profile)
+  for (const question of track.questions) {
+    const visibility = evaluateVisibility(question, profile, registry)
 
     if (visibility === 'undetermined') {
       undeterminedCount += 1
@@ -125,12 +128,12 @@ export function evaluateFlow(answers: AnswerMap): FlowState {
       continue
     }
 
-    if (!writeProfileField(profile, question.profileField, option.value)) {
+    if (!writeField(profile, question.profileField, option.value, registry)) {
       inactiveAnswerIds.push(question.id)
       continue
     }
     for (const implied of option.implies ?? []) {
-      writeProfileField(profile, implied.field, implied.value)
+      writeField(profile, implied.field, implied.value, registry)
     }
     answeredIds.add(question.id)
     if (option.unsure === true && !profile.uncertainties.includes(question.id)) {

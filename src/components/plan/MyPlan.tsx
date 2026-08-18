@@ -6,7 +6,7 @@ import { Checklist } from './Checklist'
 import { ProgressReadout } from './ProgressReadout'
 import { UnfinishedJourney } from './UnfinishedJourney'
 import { Thread } from '@/components/navigator/Thread'
-import { useHousingPlan, usePlanStore } from '@/lib/plan'
+import { usePlan, usePlanStore } from '@/lib/plan'
 import { useNavigatorStore } from '@/lib/navigator/store'
 
 /**
@@ -30,7 +30,7 @@ export function MyPlan() {
     questionsRemaining,
     answeredCount,
     voice,
-  } = useHousingPlan()
+  } = usePlan()
 
   function revisit(questionId: string) {
     goTo(questionId)

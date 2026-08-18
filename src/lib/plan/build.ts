@@ -4,12 +4,14 @@ import type { ThreadEntry } from '@/lib/navigator/flow'
 import { explainPathways, type ExplainedPathway } from '@/lib/decision-engine'
 import { explainRoadmap, type ExplainedStep } from '@/lib/roadmap'
 import { allConditionsHold, anyConditionHolds } from '@/lib/conditions'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
+import type { Track } from '@/tracks/track'
 import { FUNDING_BY_ID } from '@content/funding'
 import { ORGANISATIONS } from '@content/organisations'
 import type { FundingSourceContent, Organisation } from '@/lib/content/schema'
 
 /**
- * The housing plan.
+ * The plan.
  *
  * Derived, not stored. Everything here is computed from the person's answers, so
  * there is no second copy of the truth to go stale when an answer changes. The
@@ -36,7 +38,7 @@ export type PlanOpenQuestion = {
   question: string
 }
 
-export type HousingPlan = {
+export type Plan = {
   /** The situation in the person's own words, as recorded on the thread. */
   situation: readonly ThreadEntry[]
   /** Options that appear to fit: strong matches first, then worth exploring. */
@@ -137,16 +139,18 @@ function relevantOrganisations(profile: ParticipantProfile): Organisation[] {
   })
 }
 
-export function buildHousingPlan({
+export function buildPlan({
   profile,
   voice,
   thread,
+  track = HOME_AND_LIVING,
 }: {
   profile: ParticipantProfile
   voice: Voice | null
   thread: readonly ThreadEntry[]
-}): HousingPlan {
-  const groups = explainPathways(profile, voice)
+  track?: Track
+}): Plan {
+  const groups = explainPathways(profile, voice, track)
   const inState = (state: ExplainedPathway['state']) =>
     groups.find((group) => group.state === state)?.pathways ?? []
 
@@ -176,7 +180,7 @@ export function buildHousingPlan({
     // busywork.
     evidence: gather(likely, (result) => result.pathway.evidence),
     questionsToAsk: gather(likely, (result) => result.pathway.questionsToAsk),
-    roadmap: explainRoadmap(profile, voice),
+    roadmap: explainRoadmap(profile, voice, track.steps),
     funding: gatherFunding(likely),
     organisations: relevantOrganisations(profile),
   }
@@ -202,7 +206,7 @@ export type PlanProgress = {
  * but they are not counted while the item is absent, so progress can never
  * exceed what is actually on the list.
  */
-export function planProgress(plan: HousingPlan, completed: PlanCompletion): PlanProgress {
+export function planProgress(plan: Plan, completed: PlanCompletion): PlanProgress {
   const stepsDone = plan.roadmap.filter((step) => completed.steps[step.id] === true).length
   const evidenceDone = plan.evidence.filter(
     (item) => completed.evidence[item.id] === true,
