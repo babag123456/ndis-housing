@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ROADMAP_STEPS } from '@content/journeys/roadmap-steps'
+import { ROADMAP_STEPS } from '@/tracks/home-and-living/steps'
 import { ROADMAP_STAGES, roadmapStepSchema } from '@/lib/roadmap'
 
 describe('roadmap step content', () => {

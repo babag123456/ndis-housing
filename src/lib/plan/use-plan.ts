@@ -2,7 +2,8 @@
 
 import { useSyncExternalStore } from 'react'
 import { useFlow, useNavigatorStore } from '@/lib/navigator/store'
-import { buildHousingPlan, planProgress } from './build'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
+import { buildPlan, planProgress } from './build'
 import { usePlanStore } from './store'
 
 /**
@@ -12,8 +13,8 @@ import { usePlanStore } from './store'
  * changed on one screen is reflected on every other one without any
  * synchronising code.
  */
-export function useHousingPlan() {
-  const { profile, voice, thread, current, visible, answeredCount } = useFlow()
+export function usePlan() {
+  const { profile, voice, thread, current, visible, answeredCount } = useFlow(HOME_AND_LIVING.id)
   const steps = usePlanStore((state) => state.steps)
   const evidence = usePlanStore((state) => state.evidence)
 
@@ -30,7 +31,7 @@ export function useHousingPlan() {
     () => false,
   )
 
-  const plan = buildHousingPlan({ profile, voice, thread })
+  const plan = buildPlan({ profile, voice, thread, track: HOME_AND_LIVING })
 
   return {
     plan,

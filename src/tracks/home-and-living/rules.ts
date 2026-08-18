@@ -1,65 +1,16 @@
-import { z } from 'zod'
-import { profileFieldSchema, type ProfileField } from '@/lib/navigator/question-schema'
+import type { FieldId } from '@/lib/profile/fields'
+import type { Clause, PathwayRules } from '@/lib/decision-engine/rule-schema'
 import type { CopyVariants } from '@/lib/copy/perspective'
 
 /**
- * The rules.
- *
- * Explicit configuration rather than nested conditionals: each clause names a
- * profile field and the values that trigger it, and carries the sentence shown
- * to the person when it does. A reason and the condition that produced it cannot
- * drift apart, because they are the same object.
+ * The home and living rules.
  *
  * No rule reads a diagnosis, and there is no diagnosis in the profile to read.
  * Every clause below is about function, preference, timing or the building.
  */
 
-const copyVariantsSchema = z.object({
-  self: z.string().min(1),
-  other: z.string().min(1),
-})
+const field = (name: FieldId, ...oneOf: string[]): Clause => ({ field: name, oneOf })
 
-/** A condition on one profile field. All clauses in a signal must hold. */
-export const clauseSchema = z.object({
-  field: profileFieldSchema,
-  oneOf: z.array(z.string().min(1)).min(1),
-})
-export type Clause = z.infer<typeof clauseSchema>
-
-/** A reason this pathway may suit, and the answers that say so. */
-export const signalSchema = z.object({
-  when: z.array(clauseSchema).min(1),
-  reason: copyVariantsSchema,
-})
-
-/** A reason this pathway may not suit. */
-export const counterSignalSchema = z.object({
-  when: z.array(clauseSchema).min(1),
-  reason: copyVariantsSchema,
-  /**
-   * A blocking counter-signal drops the pathway to lower relevance on its own.
-   * Reserve it for cases where the option genuinely does not do what the person
-   * asked for — never for a hunch about how likely funding is.
-   */
-  blocking: z.boolean(),
-})
-
-export const pathwayRulesSchema = z.object({
-  pathwayId: z.string().min(1),
-  /**
-   * Fields that have to be known before this pathway can be assessed. Any that
-   * are missing or answered "I'm not sure" become open questions, and the
-   * pathway can go no higher than "more information needed".
-   */
-  requires: z.array(profileFieldSchema).min(1),
-  /** How many supporting signals make this a strong match. */
-  strongWhenAtLeast: z.number().int().min(1),
-  supports: z.array(signalSchema).min(1),
-  against: z.array(counterSignalSchema),
-})
-export type PathwayRules = z.infer<typeof pathwayRulesSchema>
-
-const field = (name: ProfileField, ...oneOf: string[]): Clause => ({ field: name, oneOf })
 
 const NEEDS_HELP_MOST_DAYS = ['daily_brief', 'daily_extensive', 'several_times_daily']
 const OWN_PLACE = ['own_place_alone', 'own_place_with_chosen_people']

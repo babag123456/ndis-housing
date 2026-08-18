@@ -120,6 +120,17 @@ export const ndisContextSchema = z.enum([
 export type NdisContext = z.infer<typeof ndisContextSchema>
 
 /**
+ * Where the person lives, only as far as the content needs.
+ *
+ * State-specific bodies differ — a New South Wales tribunal has no standing
+ * elsewhere — so jurisdiction-tagged content is filtered on this. Only New South
+ * Wales is written, and everyone else is told so plainly rather than shown
+ * nothing.
+ */
+export const stateSchema = z.enum(['nsw', 'other', UNSURE])
+export type AustralianState = z.infer<typeof stateSchema>
+
+/**
  * Housing, support and context stay in separate branches so that a change to
  * how someone is supported never implies a change to where they live.
  */
@@ -142,6 +153,7 @@ export const participantProfileSchema = z.object({
     lifeStage: lifeStageSchema.nullable(),
     timing: timingSchema.nullable(),
     ndis: ndisContextSchema.nullable(),
+    state: stateSchema.nullable(),
   }),
   /** Question ids the person answered "I'm not sure". Drives honest results. */
   uncertainties: z.array(z.string()),
@@ -154,7 +166,7 @@ export function createEmptyProfile(): ParticipantProfile {
     housing: { current: null, desired: null, featureNeeds: null },
     support: { dailyIntensity: null, overnight: null, informal: null },
     goals: { change: null },
-    context: { lifeStage: null, timing: null, ndis: null },
+    context: { lifeStage: null, timing: null, ndis: null, state: null },
     uncertainties: [],
   }
 }

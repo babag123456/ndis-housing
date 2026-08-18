@@ -2,7 +2,7 @@
 
 import { ORGANISATIONS } from '@content/organisations'
 import { OrganisationCard } from './OrganisationCard'
-import { useHousingPlan } from '@/lib/plan'
+import { usePlan } from '@/lib/plan'
 
 /**
  * The organisations screen.
@@ -12,7 +12,7 @@ import { useHousingPlan } from '@/lib/plan'
  * list is how a directory becomes useless.
  */
 export function Organisations() {
-  const { plan, ready, isComplete } = useHousingPlan()
+  const { plan, ready, isComplete } = usePlan()
   const personalised = ready && isComplete
 
   const relevantIds = new Set(

@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { ProgressReadout } from './ProgressReadout'
 import { StepList } from './StepList'
 import { UnfinishedJourney } from './UnfinishedJourney'
-import { useHousingPlan, usePlanStore } from '@/lib/plan'
+import { usePlan, usePlanStore } from '@/lib/plan'
 
 /**
  * The pathway screen.
@@ -16,7 +16,7 @@ import { useHousingPlan, usePlanStore } from '@/lib/plan'
 export function Path() {
   const toggleStep = usePlanStore((state) => state.toggleStep)
   const { plan, progress, completion, ready, isComplete, questionsRemaining, answeredCount } =
-    useHousingPlan()
+    usePlan()
 
   if (!ready) {
     return (

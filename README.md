@@ -1,8 +1,11 @@
-# Home and living navigator
+# NDIS navigator
 
 A guided navigator that helps a person with disability, a parent, a carer, a family
-member or a professional work out which housing and support options may suit, what
-may be funded, what evidence may be needed, and what to do next.
+member or a professional work out which options may suit, what may be funded, what
+evidence may be needed, and what to do next.
+
+Home and living is the first **track**. The architecture now supports more — see
+[the spec](docs/superpowers/specs/2026-08-19-ndis-navigator-tracks-design.md).
 
 It is not an information website. It asks one question at a time, builds a
 structured picture of the person's situation, and turns that into explained
@@ -115,6 +118,26 @@ them as one.
 one. Every condition is about function, preference, timing or the building. A test
 asserts high support needs do not imply a specialist building requirement.
 
+**Tracks, not one journey.** Home and living is one track of several planned. A
+track owns questions, optionally rules, and roadmap steps; it owns no logic — the
+flow, engine, roadmap and plan are shared and take a track as a parameter. Rules
+are optional on purpose, because not every track compares options: one can exist
+to tell someone who and what they may need, with nothing to score.
+
+Adding a track means new files under `src/tracks/`, one profile branch, one entry
+in `TRACKS` and one argument to `composeFields`. That claim is checked rather than
+asserted: [extensibility.test.ts](tests/tracks/extensibility.test.ts) defines a
+synthetic track in the test file alone and proves it flows end to end without a
+shared module changing.
+
+**Profile fields are a registry, not an enum.** Each field pairs a Zod schema with
+a getter and setter, and the field id union is derived from the composed registry —
+so a condition, rule or step naming a field that does not exist still fails to
+typecheck, which is the guarantee the old enum gave. What replaced the compiler
+forcing a central `switch` is a round-trip test over every field, which is
+stronger: it also catches a field whose read and write disagree, and a field
+nothing ever asks about.
+
 **Sources cannot lie about themselves.** The source schema *refuses* a
 `verified: true` without retrieved and reviewed dates, and a test proves the
 refusal.
@@ -140,20 +163,25 @@ colour alone. Reduced motion is respected.
 ## Structure
 
 ```
-content/            Pathways, funding, organisations, roadmap steps, sources
+content/            Shared content: pathways, funding, organisations, sources
 src/app/            Routes: / /start /options /path /my-plan /funding /organisations /learn
 src/components/     Presentation only
+src/tracks/
+  track.ts          What a track is
+  index.ts          TRACKS — one entry per track
+  home-and-living/  Its fields, questions, rules and roadmap steps
 src/lib/
   conditions.ts     One shared way of asking a question of the profile
+  profile/          The field primitive, the field groups, the composed registry
   copy/             The perspective layer
-  navigator/        Question schema, questions, flow engine, store
-  decision-engine/  Rules, evaluation, explanation
+  navigator/        Question schema, flow engine, store
+  decision-engine/  Rule shape, evaluation, explanation
   roadmap/          Roadmap schema and builder
   plan/             Plan derivation, progress, persistence-backed ticks
   content/          Content schemas
   persistence/      The storage seam
 src/types/          Domain dimensions and the participant profile
-tests/              content · decision-engine · roadmap · plan · navigator · e2e
+tests/              content · decision-engine · roadmap · plan · navigator · tracks · e2e
 ```
 
 ---

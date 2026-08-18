@@ -1,6 +1,6 @@
-export { buildHousingPlan, planProgress } from './build'
+export { buildPlan, planProgress } from './build'
 export type {
-  HousingPlan,
+  Plan,
   PlanChecklistItem,
   PlanCompletion,
   PlanFunding,
@@ -8,4 +8,4 @@ export type {
   PlanProgress,
 } from './build'
 export { usePlanStore, PLAN_STORAGE_KEY } from './store'
-export { useHousingPlan } from './use-housing-plan'
+export { usePlan } from './use-plan'

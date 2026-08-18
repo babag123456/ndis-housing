@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { PATHWAYS } from '@content/pathways'
 import { evaluatePathways } from '@/lib/decision-engine'
 import { evaluateFlow } from '@/lib/navigator/flow'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
 import type { AnswerMap } from '@/lib/navigator/question-schema'
 import type { MatchState } from '@/types/domain'
 import {
@@ -13,7 +14,11 @@ import {
 
 function assess(answers: AnswerMap) {
   const { profile } = evaluateFlow(answers)
-  const results = evaluatePathways(profile)
+  const results = evaluatePathways(
+    profile,
+    HOME_AND_LIVING.rules ?? [],
+    HOME_AND_LIVING.questions,
+  )
   return {
     results,
     stateOf(pathwayId: string): MatchState {

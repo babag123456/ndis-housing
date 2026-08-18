@@ -5,6 +5,7 @@ import { JourneySummary } from './JourneySummary'
 import { QuestionCard } from './QuestionCard'
 import { Thread } from './Thread'
 import { useFlow, useNavigatorStore } from '@/lib/navigator/store'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
 import { usePlanStore } from '@/lib/plan'
 
 /**
@@ -22,7 +23,7 @@ export function Navigator() {
   const reset = useNavigatorStore((state) => state.reset)
   const clearProgress = usePlanStore((state) => state.clearProgress)
   const { visible, current, thread, voice, estimatedTotal, activeQuestionId, profile } =
-    useFlow()
+    useFlow(HOME_AND_LIVING.id)
 
   // Saved answers are external state, so they are read through the external
   // store API rather than an effect. The server snapshot is always "not ready",
@@ -38,7 +39,7 @@ export function Navigator() {
   const [hasNavigated, setHasNavigated] = useState(false)
   const revisit = (questionId: string) => {
     setHasNavigated(true)
-    goTo(questionId)
+    goTo(questionId, HOME_AND_LIVING.id)
   }
 
   const active =
@@ -73,11 +74,11 @@ export function Navigator() {
             moveFocus={hasNavigated}
             onAnswer={(value) => {
               setHasNavigated(true)
-              answer(active.id, value)
+              answer(active.id, value, HOME_AND_LIVING.id)
             }}
             onBack={() => {
               setHasNavigated(true)
-              goBack()
+              goBack(HOME_AND_LIVING.id)
             }}
           />
         ) : (

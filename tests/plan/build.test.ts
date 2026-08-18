@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { buildHousingPlan, planProgress } from '@/lib/plan'
+import { buildPlan, planProgress } from '@/lib/plan'
 import { evaluateFlow } from '@/lib/navigator/flow'
 import { voiceFor } from '@/lib/copy/perspective'
 import { PERSONA_A, PERSONA_C, PERSONA_D } from '../fixtures/personas'
 
 function planFor(answers: Record<string, string>) {
   const { profile, voice, thread } = evaluateFlow(answers)
-  return buildHousingPlan({ profile, voice: voice ?? voiceFor('other'), thread })
+  return buildPlan({ profile, voice: voice ?? voiceFor('other'), thread })
 }
 
 describe('the housing plan gathers everything in one place', () => {

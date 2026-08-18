@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { profileConditionSchema } from '@/lib/conditions'
+import { profileConditionSchema, type ProfileCondition } from '@/lib/conditions'
 
 /**
  * The roadmap model.
@@ -50,4 +50,14 @@ export const roadmapStepSchema = z.object({
   /** Shown when at least one condition holds. */
   showWhenAny: z.array(profileConditionSchema).min(1).optional(),
 })
-export type RoadmapStep = z.infer<typeof roadmapStepSchema>
+/**
+ * Declared rather than inferred, so a step's conditions name a `FieldId` rather
+ * than any string. The schema validates shape; this declares meaning.
+ */
+export type RoadmapStep = Omit<
+  z.infer<typeof roadmapStepSchema>,
+  'showWhen' | 'showWhenAny'
+> & {
+  showWhen?: readonly ProfileCondition[]
+  showWhenAny?: readonly ProfileCondition[]
+}

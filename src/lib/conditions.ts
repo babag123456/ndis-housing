@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import type { ParticipantProfile } from '@/types/profile'
-import { profileFieldSchema, readProfileField } from '@/lib/navigator/question-schema'
+import type { FieldRegistry } from '@/lib/profile/field'
+import { readField, type FieldId } from '@/lib/profile/fields'
 
 /**
  * One shared way of asking a question of the profile.
@@ -14,13 +15,22 @@ import { profileFieldSchema, readProfileField } from '@/lib/navigator/question-s
  * keeps its own tri-state evaluation on top of the same field reader.
  */
 export const profileConditionSchema = z.object({
-  field: profileFieldSchema,
+  field: z.string().min(1),
   /** Holds when the field's value is one of these. */
   oneOf: z.array(z.string().min(1)).min(1).optional(),
   /** Holds when the field's value is none of these. */
   notOneOf: z.array(z.string().min(1)).min(1).optional(),
 })
-export type ProfileCondition = z.infer<typeof profileConditionSchema>
+/**
+ * The runtime schema names the field as a plain string, because the valid set is
+ * composed from every track. This type narrows it to `FieldId`, so a condition
+ * naming a field which does not exist fails to typecheck.
+ */
+export type ProfileCondition = {
+  field: FieldId
+  oneOf?: readonly string[]
+  notOneOf?: readonly string[]
+}
 
 /**
  * An unanswered field never satisfies a condition. Silence is not agreement:
@@ -30,8 +40,9 @@ export type ProfileCondition = z.infer<typeof profileConditionSchema>
 export function conditionHolds(
   profile: ParticipantProfile,
   condition: ProfileCondition,
+  registry?: FieldRegistry,
 ): boolean {
-  const value = readProfileField(profile, condition.field)
+  const value = readField(profile, condition.field, registry)
   if (value === null) return false
   if (condition.oneOf && !condition.oneOf.includes(value)) return false
   if (condition.notOneOf && condition.notOneOf.includes(value)) return false
@@ -41,13 +52,15 @@ export function conditionHolds(
 export function allConditionsHold(
   profile: ParticipantProfile,
   conditions: readonly ProfileCondition[],
+  registry?: FieldRegistry,
 ): boolean {
-  return conditions.every((condition) => conditionHolds(profile, condition))
+  return conditions.every((condition) => conditionHolds(profile, condition, registry))
 }
 
 export function anyConditionHolds(
   profile: ParticipantProfile,
   conditions: readonly ProfileCondition[],
+  registry?: FieldRegistry,
 ): boolean {
-  return conditions.some((condition) => conditionHolds(profile, condition))
+  return conditions.some((condition) => conditionHolds(profile, condition, registry))
 }
