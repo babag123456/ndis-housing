@@ -4,9 +4,12 @@ import { SiteNav } from './SiteNav'
 export function SiteHeader() {
   return (
     <header className="border-b border-hairline">
-      {/* Stacked on a narrow screen: six destinations and a wordmark cannot
-          share one line, and squeezing the wordmark crushed it to three. */}
-      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-[var(--gutter)] py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+      {/* Stacked until there is genuinely room for one line: six destinations
+          and a wordmark need about 900px between them. Below that the wordmark
+          takes its own line and the navigation wraps underneath it, rather than
+          the wordmark being crushed or a lone destination being orphaned beside
+          it. */}
+      <div className="mx-auto flex max-w-6xl flex-col gap-x-8 gap-y-4 px-[var(--gutter)] py-5 lg:flex-row lg:items-center lg:justify-between">
         <Link
           href="/"
           className="inline-flex shrink-0 items-center gap-3 text-ink no-underline"

@@ -23,7 +23,9 @@ export function SiteNav() {
 
   return (
     <nav aria-label="Sections">
-      <ul className="flex flex-wrap gap-x-6 gap-y-1">
+      {/* Wrapped rows are separated enough that a destination reads as part of
+          the row it sits on, and each link keeps a comfortable touch target. */}
+      <ul className="flex flex-wrap gap-x-6 gap-y-2">
         {DESTINATIONS.map((destination) => {
           const isCurrent = pathname === destination.href
           return (
@@ -32,7 +34,7 @@ export function SiteNav() {
                 href={destination.href}
                 aria-current={isCurrent ? 'page' : undefined}
                 className={cn(
-                  'inline-block py-1 text-[0.9375rem]',
+                  'inline-block py-1.5 text-[0.9375rem]',
                   isCurrent
                     ? 'font-bold text-ink underline decoration-eucalypt decoration-2 underline-offset-[0.4em]'
                     : 'text-moss hover:text-eucalypt hover:underline',
