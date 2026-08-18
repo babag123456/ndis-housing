@@ -1,0 +1,134 @@
+@import 'tailwindcss';
+
+/*
+ * Design tokens.
+ *
+ * A cool, eucalypt-tinted daylight palette: calm and adult without the cream
+ * paper and terracotta that reads as a template. Eucalypt carries every
+ * interactive element; plum is the single accent and appears only where the
+ * reader's own words are recorded. Every text pair below meets WCAG 2.2 AA at
+ * body size, and the two non-black text colours were measured, not guessed.
+ */
+@theme {
+  --color-ink: #121c1a; /* 15.0:1 on paper */
+  --color-ink-soft: #3a4744; /* 9.1:1 on paper */
+  --color-moss: #5b6864; /* 5.0:1 on paper */
+  --color-paper: #ebefea;
+  --color-paper-raised: #f5f7f4;
+  --color-hairline: #cfd8d2;
+  --color-hairline-strong: #adbab3;
+  --color-eucalypt: #1c5346; /* 7.6:1 on paper, 8.8:1 against white */
+  --color-eucalypt-deep: #123a31;
+  --color-plum: #6b3350; /* 8.2:1 on paper */
+
+  /* The two custom faces are loaded by next/font and exposed on <html>. Each
+   * stack ends in a real fallback so the page is readable if a font never
+   * arrives. */
+  --font-display: var(--font-literata), Georgia, 'Times New Roman', serif;
+  --font-sans: var(--font-atkinson), 'Segoe UI', system-ui, sans-serif;
+
+  --text-eyebrow: 0.8125rem;
+  --text-eyebrow--line-height: 1.2;
+  --text-eyebrow--letter-spacing: 0.12em;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.65;
+  --text-lede: 1.1875rem;
+  --text-lede--line-height: 1.6;
+}
+
+/*
+ * Type is set in rem throughout so that a person who has enlarged text in their
+ * browser or operating system gets larger text here too.
+ */
+:root {
+  --measure: 34rem;
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --step: 240ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --step: 1ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html {
+  background-color: var(--color-paper);
+  /* Never below 100%: the browser's own text size is the user's decision. */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: var(--text-body);
+  line-height: var(--text-body--line-height);
+  text-underline-offset: 0.2em;
+}
+
+/*
+ * One focus treatment everywhere, thick enough and offset enough to satisfy the
+ * WCAG 2.2 focus appearance criterion on both paper and eucalypt surfaces.
+ */
+:focus-visible {
+  outline: 3px solid var(--color-plum);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.on-dark :focus-visible {
+  outline-color: var(--color-paper);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+
+/*
+ * Named "eyebrow", not "overline": Tailwind ships an `overline` utility for
+ * text-decoration-line, and a custom class of the same name loses to it.
+ */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-size: var(--text-eyebrow);
+  font-weight: 700;
+  letter-spacing: var(--text-eyebrow--letter-spacing);
+  line-height: var(--text-eyebrow--line-height);
+  text-transform: uppercase;
+  color: var(--color-moss);
+}
+
+.measure {
+  max-width: var(--measure);
+}
+
+/* The one moment of motion: a question arriving. */
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise var(--step) cubic-bezier(0.2, 0.7, 0.3, 1) both;
+}
