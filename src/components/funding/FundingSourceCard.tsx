@@ -62,6 +62,22 @@ export function FundingSourceCard({
         </Explainer>
       </div>
 
+      {source.howToApply && (
+        <section className="measure mt-6 border-l-4 border-eucalypt bg-paper-raised px-4 py-3">
+          <h4 className="eyebrow mb-1">How to apply</h4>
+          <p className="text-[0.9375rem] leading-[1.55]">
+            Start with: {source.howToApply.startWith}
+          </p>
+          <ol className="mt-3 space-y-2 text-[0.9375rem] leading-[1.5] text-ink-soft">
+            {source.howToApply.steps.map((step, index) => (
+              <li key={step}>
+                <span className="font-bold text-ink">{index + 1}.</span> {step}
+              </li>
+            ))}
+          </ol>
+        </section>
+      )}
+
       <div className="mt-5">
         <Sources sources={source.sources} />
       </div>

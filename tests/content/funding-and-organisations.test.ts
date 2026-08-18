@@ -74,17 +74,10 @@ describe('organisation content', () => {
     }
   })
 
-  it('names no specific organisation, because none has been verified', () => {
-    // Inventing a named service would be worse than describing the role. If a
-    // real directory is added, it needs verified sources and this test changes.
-    const invented = ['pty ltd', 'incorporated', 'foundation of', '.com.au']
-    for (const organisation of ORGANISATIONS) {
-      const prose = [organisation.plainName, organisation.howToFind].join(' ').toLowerCase()
-      for (const marker of invented) {
-        expect(prose.includes(marker), `${organisation.id}: "${marker}"`).toBe(false)
-      }
-    }
-  })
+  // The rule "name nobody" was replaced by the sharper rules in
+  // providers.test.ts once real organisations were added: roles still describe
+  // jobs rather than organisations, and named providers carry their own
+  // constraints.
 
   it('carries a source for each entry', () => {
     for (const organisation of ORGANISATIONS) {

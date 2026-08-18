@@ -9,6 +9,13 @@ import type { Source } from '@/lib/content/schema'
  */
 export function Sources({ sources }: { sources: readonly Source[] }) {
   const unchecked = sources.filter((source) => !source.verified)
+  // The most recent date any of these pages was read. Reading a page is not the
+  // same as a person confirming it says what we say it says, so both are shown.
+  const retrievedOn = unchecked
+    .map((source) => source.retrievedAt)
+    .filter((date): date is string => date !== undefined)
+    .sort()
+    .at(-1)
 
   return (
     <footer className="text-[0.8125rem] leading-[1.5] text-moss">
@@ -30,9 +37,11 @@ export function Sources({ sources }: { sources: readonly Source[] }) {
       </p>
       {unchecked.length > 0 && (
         <p className="mt-1">
-          {unchecked.length === sources.length && sources.length > 1
-            ? 'These pages have not been checked by a person yet.'
-            : 'This page has not been checked by a person yet.'}
+          {retrievedOn
+            ? `Read on ${retrievedOn}, but not yet checked by a person.`
+            : unchecked.length === sources.length && sources.length > 1
+              ? 'These pages have not been checked by a person yet.'
+              : 'This page has not been checked by a person yet.'}
         </p>
       )}
     </footer>

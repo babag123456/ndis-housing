@@ -35,10 +35,11 @@ export function Organisations() {
           : 'These are the kinds of help involved in a housing change. Each one says what it is good for and how to find one.'}
       </p>
       <p className="measure mt-5 text-[0.9375rem] text-moss">
-        These are roles rather than named services. A directory of real
-        organisations needs checked, current, state-by-state information, and we
-        would rather describe the role than send you to a number that may not
-        answer.
+        Each role lists a few named examples so you can see what it looks like in
+        practice. They are examples rather than recommendations, and nothing like a
+        full list. What an organisation does, where it works and whether it is
+        NDIS-registered all change, so treat every entry as a starting point and
+        check it with them.
       </p>
 
       <div className="mt-14">
