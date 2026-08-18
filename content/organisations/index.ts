@@ -171,6 +171,31 @@ export const ORGANISATIONS: readonly Organisation[] = [
     sources: [SOCIAL_HOUSING],
   },
   {
+    id: 'housing-search-service',
+    plainName: 'A housing listing service',
+    kind: 'housing_provider',
+    description: {
+      simple:
+        'A website that gathers homes from many different providers so they can be searched in one place.',
+      tellMeMore:
+        'A listing service does not own or run the homes — it lists what others have. That makes it the fastest way to see what actually exists in an area, and it is worth checking who runs any home before going further.',
+      detail:
+        'Listings cover Specialist Disability Accommodation, shared supported homes, Individualised Living Options arrangements and ordinary rental. Availability changes constantly, so a listing is a starting point for a conversation rather than an offer.',
+    },
+    helpsWith: [
+      'Seeing what accessible housing actually exists in an area',
+      'Being told when something new is listed, instead of checking repeatedly',
+    ],
+    questionsToAsk: [
+      'Is this listing still current?',
+      'Who owns and runs this home, and is that the same organisation as the support provider?',
+    ],
+    howToFind:
+      'Use a national listing service for accessible and NDIS housing. Creating a search profile is usually free.',
+    showWhen: [{ field: 'housing.desired', notOneOf: ['stay_where_they_are'] }],
+    sources: [SOCIAL_HOUSING],
+  },
+  {
     id: 'support-provider',
     plainName: 'A support provider',
     kind: 'registered_provider',

@@ -107,6 +107,18 @@ export const fundingSourceContentSchema = z.object({
   pays: z.array(z.string().min(1)).min(1),
   /** What it does not cover. As important as what it does. */
   doesNotPay: z.array(z.string().min(1)).min(1),
+  /**
+   * How to actually apply. Route-level only — where to go and who to ask — never
+   * the rules about who succeeds, which change and are not ours to state.
+   * Absent where there is nothing to apply for.
+   */
+  howToApply: z
+    .object({
+      steps: z.array(z.string().min(1)).min(1),
+      /** Who to contact or where to go. */
+      startWith: z.string().min(1),
+    })
+    .optional(),
   sources: z.array(sourceSchema).min(1),
 })
 export type FundingSourceContent = z.infer<typeof fundingSourceContentSchema>
@@ -137,3 +149,47 @@ export const organisationSchema = z.object({
   sources: z.array(sourceSchema).min(1),
 })
 export type Organisation = z.infer<typeof organisationSchema>
+
+/**
+ * A named organisation.
+ *
+ * Separate from the roles in `organisations` on purpose: a role is a job that
+ * needs doing, and a provider is one organisation that says it does that job.
+ * Several providers can play the same role, and one provider can play several.
+ *
+ * Everything here is what the organisation says about itself, cited to its own
+ * site. Under CLAUDE.md a provider's website describes its own services but is
+ * never authority for NDIS policy, so nothing in this file is allowed to be a
+ * source for a policy claim — a test enforces that.
+ *
+ * These are examples of each kind of service, not recommendations, and not a
+ * directory. Registration, coverage and services change, which is why each entry
+ * records when its page was last read.
+ *
+ * Deliberately no registration field. Whether an organisation is currently
+ * NDIS-registered is live, volatile, and published by the NDIS Commission in a
+ * searchable register — so the interface sends people there rather than restating
+ * it. An earlier version of this file did restate it, and got Mable wrong.
+ */
+export const providerSchema = z.object({
+  id: z.string().min(1),
+  /** The organisation's own name. */
+  name: z.string().min(1),
+  url: z.string().url(),
+  kind: z.enum(PROVIDER_KINDS),
+  /** Which roles from `organisations` this provider says it can play. */
+  roles: z.array(z.string().min(1)).min(1),
+  /** What it does, in its own terms rather than ours. */
+  describesItselfAs: z.string().min(1),
+  /**
+   * The thing that actually changes a decision — who employs the workers, who
+   * governs the home, what it costs to use. Not a selling point.
+   */
+  worthKnowing: z.array(z.string().min(1)).min(1),
+  /** Where it says it operates. "not stated" where the site does not say. */
+  coverage: z.string().min(1),
+  questionsToAsk: z.array(z.string().min(1)).min(1),
+  /** Must be the provider's own site, typed as a provider source. */
+  sources: z.array(sourceSchema).min(1),
+})
+export type Provider = z.infer<typeof providerSchema>

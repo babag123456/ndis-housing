@@ -108,10 +108,88 @@ test('who can help is filtered to the situation once it is known', async ({ page
 test('who can help says plainly that it is not a directory', async ({ page }) => {
   await page.goto('/organisations')
 
-  await expect(page.getByText(/roles rather than named services/)).toBeVisible()
+  await expect(page.getByText(/examples rather than recommendations/)).toBeVisible()
+  await expect(page.getByText(/nothing like a full list/)).toBeVisible()
   await expect(
     page.getByRole('article').first().getByRole('heading', { name: 'How to find one' }),
   ).toBeVisible()
+})
+
+test('a role lists named examples in their own words', async ({ page }) => {
+  await page.goto('/organisations')
+
+  const supportProvider = page.getByRole('article', { name: 'A support provider' })
+  await supportProvider.getByText(/Examples of this kind of service/).click()
+
+  // Exact: the source citations also link to the same sites.
+  await expect(
+    supportProvider.getByRole('link', { name: 'Hireup', exact: true }),
+  ).toBeVisible()
+  await expect(
+    supportProvider.getByRole('link', { name: 'Mable', exact: true }),
+  ).toBeVisible()
+  // The distinction that actually changes a decision.
+  await expect(supportProvider).toContainText('employed as casual employees')
+  await expect(supportProvider).toContainText('self-employed independent contractors')
+})
+
+test('a named example carries questions to ask it, not a sales pitch', async ({ page }) => {
+  await page.goto('/organisations')
+
+  const supportProvider = page.getByRole('article', { name: 'A support provider' })
+  await supportProvider.getByText(/Examples of this kind of service/).click()
+
+  await expect(
+    supportProvider.getByRole('heading', { name: 'Questions to ask them' }).first(),
+  ).toBeVisible()
+})
+
+test('a named example points at the register rather than claiming registration', async ({
+  page,
+}) => {
+  await page.goto('/organisations')
+
+  const supportProvider = page.getByRole('article', { name: 'A support provider' })
+  await supportProvider.getByText(/Examples of this kind of service/).click()
+
+  // Registration is live information, so the page sends people to the authority.
+  await expect(supportProvider).not.toContainText('NDIS-registered provider')
+  await expect(
+    supportProvider.getByRole('link', { name: /Commission’s register/ }),
+  ).toBeVisible()
+  await expect(
+    supportProvider.getByRole('link', { name: /compliance and enforcement decisions/ }),
+  ).toBeVisible()
+})
+
+test('a named example says when its page was read, and that nobody checked it', async ({
+  page,
+}) => {
+  await page.goto('/organisations')
+
+  const supportProvider = page.getByRole('article', { name: 'A support provider' })
+  await supportProvider.getByText(/Examples of this kind of service/).click()
+
+  await expect(supportProvider).toContainText('not yet checked by a person')
+  await expect(supportProvider).toContainText('Read on 2026-08-18')
+})
+
+test('funding says how to apply and who to start with', async ({ page }) => {
+  await page.goto('/funding')
+
+  const ndis = page.getByRole('article', { name: 'NDIS funding' })
+  await expect(ndis.getByRole('heading', { name: 'How to apply' })).toBeVisible()
+  await expect(ndis).toContainText('1800 800 110')
+  await expect(ndis).toContainText('Access Request Form')
+})
+
+test('how to apply never states who qualifies', async ({ page }) => {
+  await page.goto('/funding')
+
+  const body = ((await page.getByRole('main').textContent()) ?? '').toLowerCase()
+  for (const phrase of ['eligible', 'you qualify', 'you will receive']) {
+    expect(body, phrase).not.toContain(phrase)
+  }
 })
 
 test('the plan links out to funding and to who can help', async ({ page }) => {

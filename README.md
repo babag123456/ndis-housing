@@ -174,10 +174,49 @@ These need a person, not more code.
    users. The [storage seam](src/lib/persistence/journey-storage.ts) exists so this
    can move without touching the journey code.
 
-3. **No named organisations.** [content/organisations](content/organisations/index.ts)
-   describes *roles* rather than services, because a real directory needs verified,
-   current, state-by-state data and an invented one would send someone to a number
-   that may not answer. A test enforces this.
+3. **Which named organisations to include, and on what basis.** There are now four
+   ([content/providers](content/providers/index.ts)), and inclusion is an editorial
+   act: naming some and not others is an endorsement by omission. The current set
+   exists because it was asked for and could be read, which is not a policy. Worth
+   deciding whether this stays a handful of illustrative examples or becomes a
+   maintained list — and if the latter, who maintains it and how often.
+
+## Roles, providers and funding routes
+
+Three separate things, deliberately:
+
+- **Roles** ([content/organisations](content/organisations/index.ts)) are jobs that
+  need doing — a support coordinator, an occupational therapist, a tenancy service.
+  Roles never name an organisation, and a test enforces that.
+- **Providers** ([content/providers](content/providers/index.ts)) are named
+  organisations that say they do one or more of those jobs. Everything shown is what
+  each organisation says about *itself*, cited to its own site as a `provider`
+  source. Under CLAUDE.md a provider site describes its own services and is never
+  authority for NDIS policy, so a test stops any provider being cited for a policy
+  claim — pathway and funding content may cite `official` sources only.
+- **Funding routes** ([content/funding](content/funding/index.ts)) now carry
+  `howToApply`: where to start and what the steps are. Route-level only. A test
+  rejects any rule about who succeeds, and any dollar figure.
+
+Nothing states whether an organisation is currently NDIS-registered. That is live
+information published in a searchable register, so each list points at the
+[Commission's register](https://www.ndiscommission.gov.au/provider-registration/find-registered-provider)
+and its [compliance and enforcement decisions](https://www.ndiscommission.gov.au/about-us/compliance-and-enforcement/compliance-actions)
+instead. An earlier version restated registration status and got Mable wrong —
+Mable states plainly that it is *not* registered, because it is a platform rather
+than a support provider, and the entry claimed its position was unclear. A test now
+rejects any registration claim.
+
+Each provider carries the things that would actually change a decision rather than
+anything resembling a selling point — Hireup employs its support workers as casual
+employees, Mable's are self-employed contractors, and that difference decides who
+carries insurance and responsibility. Every entry has questions to ask *them*,
+because a named organisation without those is an advert. Entries are alphabetical so
+the order implies no ranking, and a test rejects marketing language.
+
+`retrievedAt` records the date a page was read. **Read is not verified**: verified
+means a person confirmed the page supports the wording, and the interface says
+"Read on <date>, but not yet checked by a person" rather than implying otherwise.
 
 ## Known limitations
 
@@ -188,6 +227,12 @@ These need a person, not more code.
   Accommodation cannot rise above "worth exploring". Asking that question is the
   clean fix and would sharpen both the engine and the roadmap.
 - **Checklist ids derive from wording**, so editing an item's text loses its tick.
+- **Provider details go stale.** Coverage and services change, and nothing
+  re-checks them. The dates are shown so a reader can judge how old the information
+  is, but there is no review process behind it.
+- **Hireup's own site could not be read** — it renders in the browser, so its
+  employment model is cited to its submission to the Joint Standing Committee on the
+  NDIS instead, which is a public record rather than marketing.
 - **`shadcn/ui` is not installed.** Phase one needed one radio group, and native
   controls beat a Radix reimplementation for screen readers and voice control. The
   `cn()` helper and CSS-variable tokens are in place so it drops in unchanged.

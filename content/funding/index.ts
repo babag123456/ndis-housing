@@ -36,6 +36,15 @@ export const FUNDING_SOURCES_CONTENT: readonly FundingSourceContent[] = [
       'Food, power, water and other everyday household bills',
       'Things a person would need whether or not they had a disability',
     ],
+    howToApply: {
+      startWith: 'Phone the National Disability Insurance Agency on 1800 800 110.',
+      steps: [
+        'Make the request by phone, or complete an Access Request Form.',
+        'A treating health professional completes the section of the form about disability, or existing reports and assessments can be sent instead.',
+        'Provide information about age, residency and disability.',
+        'If home and living supports are the goal, say so early — they are a specific part of a plan and are asked for separately.',
+      ],
+    },
     sources: [NDIS_HOME_AND_LIVING],
   },
   {
@@ -53,6 +62,14 @@ export const FUNDING_SOURCES_CONTENT: readonly FundingSourceContent[] = [
       'Disability supports, which the NDIS may fund instead',
       'The full cost of renting in most capital cities on its own',
     ],
+    howToApply: {
+      startWith: 'Services Australia, through myGov or by phone.',
+      steps: [
+        'Set up a myGov account linked to Centrelink if there is not one already.',
+        'Start the claim and expect to provide medical evidence about how the condition affects daily function.',
+        'Ask Services Australia what evidence they need before gathering it, rather than after.',
+      ],
+    },
     sources: [DISABILITY_SUPPORT_PENSION],
   },
   {
@@ -68,6 +85,13 @@ export const FUNDING_SOURCES_CONTENT: readonly FundingSourceContent[] = [
     },
     pays: ['Part of the rent, alongside other income'],
     doesNotPay: ['The whole rent', 'A mortgage'],
+    howToApply: {
+      startWith: 'Services Australia — usually alongside an existing payment.',
+      steps: [
+        'This is generally worked out with an income support payment rather than claimed on its own.',
+        'Tell Services Australia the rent details, and tell them again whenever the rent or the living arrangement changes.',
+      ],
+    },
     sources: [RENT_ASSISTANCE],
   },
   {
@@ -87,6 +111,14 @@ export const FUNDING_SOURCES_CONTENT: readonly FundingSourceContent[] = [
       'Some changes to a home, depending on the state',
     ],
     doesNotPay: ['Disability supports', 'Costs in another state'],
+    howToApply: {
+      startWith: 'The housing authority for your state or territory.',
+      steps: [
+        'Find the housing register for the state or territory and apply, even if a move is a long way off.',
+        'Ask whether any priority category applies, and what evidence it needs.',
+        'Applying does not stop other options being tried at the same time.',
+      ],
+    },
     sources: [SOCIAL_HOUSING],
   },
   {

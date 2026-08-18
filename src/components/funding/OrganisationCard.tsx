@@ -1,5 +1,6 @@
 import { Explainer } from '@/components/content/Explainer'
 import { Sources } from '@/components/content/Sources'
+import { ProviderList } from './ProviderList'
 import type { Organisation } from '@/lib/content/schema'
 
 /**
@@ -51,6 +52,8 @@ export function OrganisationCard({ organisation }: { organisation: Organisation 
         <h4 className="eyebrow mb-1">How to find one</h4>
         <p className="text-[0.9375rem] leading-[1.55]">{organisation.howToFind}</p>
       </div>
+
+      <ProviderList roleId={organisation.id} />
 
       <div className="mt-5">
         <Sources sources={organisation.sources} />
