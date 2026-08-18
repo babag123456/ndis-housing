@@ -1,20 +1,18 @@
 import { Sources } from '@/components/content/Sources'
+import { COMPLIANCE_ACTIONS, PROVIDER_REGISTER } from '@content/sources/official'
 import { providersForRole } from '@content/providers'
-import type { Provider } from '@/lib/content/schema'
 
 /**
  * Named organisations that say they do this job.
  *
  * Examples, not recommendations, and not a directory — which is why every entry
  * is the organisation's own description, carries questions to ask it, and says
- * when its page was last read. The registration line is stated as what the
- * organisation says rather than as a fact we have checked.
+ * when its page was last read.
+ *
+ * Nothing here states whether an organisation is currently NDIS-registered. That
+ * is live information published in a searchable register, so the list points at
+ * the register instead. Restating it is how this page got Mable wrong.
  */
-const REGISTRATION_LABEL: Record<Provider['ndisRegistration'], string> = {
-  states_registered: 'Says it is an NDIS-registered provider',
-  states_not_registered: 'Says it is not an NDIS-registered provider',
-  unclear: 'Does not clearly state whether it is NDIS-registered',
-}
 
 export function ProviderList({ roleId }: { roleId: string }) {
   const providers = providersForRole(roleId)
@@ -49,9 +47,7 @@ export function ProviderList({ roleId }: { roleId: string }) {
               {provider.describesItselfAs}
             </p>
 
-            <p className="mt-3 text-[0.8125rem] text-moss">
-              {REGISTRATION_LABEL[provider.ndisRegistration]} · {provider.coverage}
-            </p>
+            <p className="mt-3 text-[0.8125rem] text-moss">{provider.coverage}</p>
 
             <section className="mt-4">
               <h6 className="eyebrow mb-2">Worth knowing</h6>
@@ -77,6 +73,37 @@ export function ProviderList({ roleId }: { roleId: string }) {
           </li>
         ))}
       </ul>
+
+      <section className="mt-8 border-t border-hairline pt-5">
+        <h6 className="eyebrow mb-2">Check these two things yourself</h6>
+        <ul className="space-y-2 text-[0.9375rem] leading-[1.5] text-ink-soft">
+          <li>
+            Whether an organisation is currently NDIS-registered, on the{' '}
+            <a
+              href={PROVIDER_REGISTER.sourceUrl}
+              className="text-eucalypt underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Commission&rsquo;s register
+            </a>
+            . Registration changes, and whether it matters depends on how the plan is
+            managed.
+          </li>
+          <li>
+            Whether any action has been taken against them, in the Commission&rsquo;s{' '}
+            <a
+              href={COMPLIANCE_ACTIONS.sourceUrl}
+              className="text-eucalypt underline"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              compliance and enforcement decisions
+            </a>
+            , which lists banning orders and suspended registrations.
+          </li>
+        </ul>
+      </section>
     </details>
   )
 }

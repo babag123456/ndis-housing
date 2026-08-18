@@ -198,6 +198,15 @@ Three separate things, deliberately:
   `howToApply`: where to start and what the steps are. Route-level only. A test
   rejects any rule about who succeeds, and any dollar figure.
 
+Nothing states whether an organisation is currently NDIS-registered. That is live
+information published in a searchable register, so each list points at the
+[Commission's register](https://www.ndiscommission.gov.au/provider-registration/find-registered-provider)
+and its [compliance and enforcement decisions](https://www.ndiscommission.gov.au/about-us/compliance-and-enforcement/compliance-actions)
+instead. An earlier version restated registration status and got Mable wrong —
+Mable states plainly that it is *not* registered, because it is a platform rather
+than a support provider, and the entry claimed its position was unclear. A test now
+rejects any registration claim.
+
 Each provider carries the things that would actually change a decision rather than
 anything resembling a selling point — Hireup employs its support workers as casual
 employees, Mable's are self-employed contractors, and that difference decides who
@@ -218,9 +227,9 @@ means a person confirmed the page supports the wording, and the interface says
   Accommodation cannot rise above "worth exploring". Asking that question is the
   clean fix and would sharpen both the engine and the roadmap.
 - **Checklist ids derive from wording**, so editing an item's text loses its tick.
-- **Provider details go stale.** Registration status, coverage and services change,
-  and nothing re-checks them. The dates are shown so a reader can judge how old the
-  information is, but there is no review process behind it.
+- **Provider details go stale.** Coverage and services change, and nothing
+  re-checks them. The dates are shown so a reader can judge how old the information
+  is, but there is no review process behind it.
 - **Hireup's own site could not be read** — it renders in the browser, so its
   employment model is cited to its submission to the Joint Standing Committee on the
   NDIS instead, which is a public record rather than marketing.

@@ -165,6 +165,11 @@ export type Organisation = z.infer<typeof organisationSchema>
  * These are examples of each kind of service, not recommendations, and not a
  * directory. Registration, coverage and services change, which is why each entry
  * records when its page was last read.
+ *
+ * Deliberately no registration field. Whether an organisation is currently
+ * NDIS-registered is live, volatile, and published by the NDIS Commission in a
+ * searchable register — so the interface sends people there rather than restating
+ * it. An earlier version of this file did restate it, and got Mable wrong.
  */
 export const providerSchema = z.object({
   id: z.string().min(1),
@@ -181,11 +186,6 @@ export const providerSchema = z.object({
    * governs the home, what it costs to use. Not a selling point.
    */
   worthKnowing: z.array(z.string().min(1)).min(1),
-  /**
-   * Whether it states it is an NDIS-registered provider. "unclear" is a real and
-   * useful answer; guessing is not.
-   */
-  ndisRegistration: z.enum(['states_registered', 'states_not_registered', 'unclear']),
   /** Where it says it operates. "not stated" where the site does not say. */
   coverage: z.string().min(1),
   questionsToAsk: z.array(z.string().min(1)).min(1),

@@ -144,6 +144,24 @@ test('a named example carries questions to ask it, not a sales pitch', async ({ 
   ).toBeVisible()
 })
 
+test('a named example points at the register rather than claiming registration', async ({
+  page,
+}) => {
+  await page.goto('/organisations')
+
+  const supportProvider = page.getByRole('article', { name: 'A support provider' })
+  await supportProvider.getByText(/Examples of this kind of service/).click()
+
+  // Registration is live information, so the page sends people to the authority.
+  await expect(supportProvider).not.toContainText('NDIS-registered provider')
+  await expect(
+    supportProvider.getByRole('link', { name: /Commission’s register/ }),
+  ).toBeVisible()
+  await expect(
+    supportProvider.getByRole('link', { name: /compliance and enforcement decisions/ }),
+  ).toBeVisible()
+})
+
 test('a named example says when its page was read, and that nobody checked it', async ({
   page,
 }) => {

@@ -68,3 +68,13 @@ export const SOCIAL_HOUSING = official(
   'https://www.dss.gov.au/housing-support',
   'Department of Social Services — Housing support',
 )
+
+export const PROVIDER_REGISTER = official(
+  'https://www.ndiscommission.gov.au/provider-registration/find-registered-provider',
+  'NDIS Quality and Safeguards Commission — Find a registered provider',
+)
+
+export const COMPLIANCE_ACTIONS = official(
+  'https://www.ndiscommission.gov.au/about-us/compliance-and-enforcement/compliance-actions',
+  'NDIS Quality and Safeguards Commission — Compliance and enforcement actions',
+)

@@ -112,14 +112,28 @@ describe('nothing reads like a recommendation', () => {
     }
   })
 
-  it('does not assert NDIS registration where the site did not say so', () => {
+  it('never states whether an organisation is NDIS-registered', () => {
+    /*
+     * Registration is live, volatile and published in a searchable register.
+     * An earlier version of this file restated it and got Mable wrong: Mable
+     * states plainly that it is not registered, because it is a platform rather
+     * than a support provider, and this file claimed its position was unclear.
+     * The interface now points at the register instead of restating it.
+     */
     for (const provider of PROVIDERS) {
-      if (provider.ndisRegistration === 'states_registered') continue
-      const prose = [provider.describesItselfAs, ...provider.worthKnowing]
+      expect(provider).not.toHaveProperty('ndisRegistration')
+      const prose = [provider.describesItselfAs, provider.coverage, ...provider.worthKnowing]
         .join(' ')
         .toLowerCase()
-      expect(prose.includes('is an ndis-registered'), provider.id).toBe(false)
-      expect(prose.includes('is ndis registered'), provider.id).toBe(false)
+      for (const claim of [
+        'is an ndis-registered',
+        'is ndis registered',
+        'is not an ndis-registered',
+        'states that it is a registered',
+        'is a registered ndis provider',
+      ]) {
+        expect(prose.includes(claim), `${provider.id}: "${claim}"`).toBe(false)
+      }
     }
   })
 

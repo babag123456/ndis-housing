@@ -29,10 +29,8 @@ export const PROVIDERS: readonly Provider[] = [
       'A platform for finding and booking local disability support workers, where the workers are employed by Hireup rather than working as contractors.',
     worthKnowing: [
       'Support workers are directly employed as casual employees, with award wages, superannuation and workers compensation.',
-      'Because the workers are employed, Hireup rather than the person receiving support carries the employer responsibilities.',
-      'It states that it is an NDIS-registered provider, which means it is subject to the NDIS Quality and Safeguards Commission.',
+      'Because the workers are employed rather than contracted, the employment obligations sit with Hireup rather than with the person receiving support.',
     ],
-    ndisRegistration: 'states_registered',
     coverage: 'Australia-wide, subject to workers being available in a given area.',
     questionsToAsk: [
       'Are there enough workers in our area, and what happens when the regular worker is away?',
@@ -53,7 +51,6 @@ export const PROVIDERS: readonly Provider[] = [
       'A free seeker profile can be created, and it emails when a home matching the preferences is listed.',
       'It separated from the Summer Foundation on 1 July 2024 and is now its own entity.',
     ],
-    ndisRegistration: 'unclear',
     coverage: 'Listings from across Australia.',
     questionsToAsk: [
       'How recently was this listing updated, and is it still available?',
@@ -72,9 +69,7 @@ export const PROVIDERS: readonly Provider[] = [
     worthKnowing: [
       'Workers are self-employed independent contractors and are not employed by Mable.',
       'Rates are agreed directly with each worker rather than set by the platform, which can make them lower than a registered provider’s.',
-      'Workers on the platform are generally not NDIS-registered, which affects whether they can be paid for depending on how a plan is managed.',
     ],
-    ndisRegistration: 'unclear',
     coverage: 'Australia-wide, subject to workers being available in a given area.',
     questionsToAsk: [
       'Given how the plan is managed, can an unregistered worker be paid for from it?',
@@ -93,9 +88,7 @@ export const PROVIDERS: readonly Provider[] = [
     worthKnowing: [
       'It is a co-operative, and families take part in governing the homes rather than only receiving a service.',
       'It offers support coordination and help with setting a house up, as well as the accommodation itself.',
-      'It states that it is a registered NDIS provider.',
     ],
-    ndisRegistration: 'states_registered',
     coverage: 'Head office in Sydney. The site does not state which regions it serves.',
     questionsToAsk: [
       'What does the family’s role in governing the home involve, in practice and in hours?',
