@@ -430,8 +430,8 @@ describe('the field registry', () => {
       'housing.featureNeeds',
       'perspective',
       'support.dailyIntensity',
-      'support.overnight',
       'support.informal',
+      'support.overnight',
     ])
   })
 
