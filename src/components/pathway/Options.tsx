@@ -1,6 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
 import { useSyncExternalStore } from 'react'
 import Link from 'next/link'
 import { MatchStateHeadingCopy } from './MatchStateHeadingCopy'
@@ -22,7 +23,7 @@ import { useFlow, useNavigatorStore } from '@/lib/navigator/store'
 export function Options() {
   const router = useRouter()
   const goTo = useNavigatorStore((state) => state.goTo)
-  const { profile, voice, current, visible, answeredCount, thread } = useFlow()
+  const { profile, voice, current, visible, answeredCount, thread } = useFlow(HOME_AND_LIVING.id)
 
   const ready = useSyncExternalStore(
     (onChange) => useNavigatorStore.persist.onFinishHydration(onChange),
@@ -53,7 +54,7 @@ export function Options() {
     )
   }
 
-  const groups = explainPathways(profile, voice)
+  const groups = explainPathways(profile, voice, HOME_AND_LIVING)
   const person = voice?.isSelf ? 'you' : 'them'
   const comparable = groups
     .filter((group) => group.state === 'strong_match' || group.state === 'worth_exploring')

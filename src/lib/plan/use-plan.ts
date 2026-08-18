@@ -2,6 +2,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { useFlow, useNavigatorStore } from '@/lib/navigator/store'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
 import { buildPlan, planProgress } from './build'
 import { usePlanStore } from './store'
 
@@ -13,7 +14,7 @@ import { usePlanStore } from './store'
  * synchronising code.
  */
 export function usePlan() {
-  const { profile, voice, thread, current, visible, answeredCount } = useFlow()
+  const { profile, voice, thread, current, visible, answeredCount } = useFlow(HOME_AND_LIVING.id)
   const steps = usePlanStore((state) => state.steps)
   const evidence = usePlanStore((state) => state.evidence)
 
@@ -30,7 +31,7 @@ export function usePlan() {
     () => false,
   )
 
-  const plan = buildPlan({ profile, voice, thread })
+  const plan = buildPlan({ profile, voice, thread, track: HOME_AND_LIVING })
 
   return {
     plan,

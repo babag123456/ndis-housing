@@ -8,6 +8,7 @@ import { UnfinishedJourney } from './UnfinishedJourney'
 import { Thread } from '@/components/navigator/Thread'
 import { usePlan, usePlanStore } from '@/lib/plan'
 import { useNavigatorStore } from '@/lib/navigator/store'
+import { HOME_AND_LIVING } from '@/tracks/home-and-living'
 
 /**
  * The plan.
@@ -33,7 +34,7 @@ export function MyPlan() {
   } = usePlan()
 
   function revisit(questionId: string) {
-    goTo(questionId)
+    goTo(questionId, HOME_AND_LIVING.id)
     router.push('/start')
   }
 
