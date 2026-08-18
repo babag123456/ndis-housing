@@ -87,7 +87,12 @@ they need as parameters, which is also what makes them injectable for Task 8.
 - Produces:
   - `type FieldDef<T extends string> = { schema: z.ZodType<T>; read: (p: ParticipantProfile) => T | null; write: (p: ParticipantProfile, v: T) => void }`
   - `function defineField<T extends string>(def: FieldDef<T>): FieldDef<T>`
-  - `type AnyFieldDef = FieldDef<string>`
+  - `type AnyFieldDef` — the value-type-erased shape the registry holds. **Not**
+    `FieldDef<string>`: `write` takes `T` as a parameter, so under
+    `strictFunctionTypes` a `FieldDef<'red' | 'blue'>` is not assignable to a
+    `FieldDef<string>`, correctly. `defineField` performs the erasure, which is
+    sound because every write through the registry parses with the field's own
+    schema first.
   - `type FieldRegistry = Readonly<Record<string, AnyFieldDef>>`
   - `function composeFields<T extends readonly Record<string, AnyFieldDef>[]>(...groups: T): UnionToIntersection<T[number]>`
   - `function readFrom(registry: FieldRegistry, profile: ParticipantProfile, id: string): string | null`
