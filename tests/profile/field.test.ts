@@ -61,3 +61,9 @@ describe('writeTo', () => {
     expect(writeTo({}, createEmptyProfile(), 'nope', 'x')).toBe(false)
   })
 })
+
+describe('context.state', () => {
+  it('starts unanswered, because nobody has been asked yet', () => {
+    expect(createEmptyProfile().context.state).toBeNull()
+  })
+})
